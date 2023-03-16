@@ -1,12 +1,12 @@
 import React from 'react'
-import House from '../house/House'
+import HouseList from '../house/House'
 import Search from '../Search/Search'
 
 const Home = () => {
   return (
     <>
     <Search/>
-    <House/>
+    <HouseList/>
     </>
   )
 }

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import Agent from "./Agent";
 import Student from "./Student";
 
+
 const Register = () => {
   const [action, setAction] = useState("Student");
+
+
   return (
     <div className="w-full">
       <div className="flex flex-col justify-center items-center w-full">

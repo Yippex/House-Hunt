@@ -1,9 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
+import supabase from "../../supabase/SupabaseConfig";
+
 
 const Student = () => {
+  
+  const initialvalues = { name: "", email: "", password: "" };
+  const [formvalues, setFormvalues] = useState(initialvalues);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormvalues({ ...formvalues, [name]: value });
+  };
+  console.log(formvalues)
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formvalues.email,
+        password: formvalues.password,
+        options: {
+          data: {
+            full_name: formvalues.name,
+          },
+        },
+      });
+      alert('check your email for verification')
+    } catch (error) {
+      console.log(error)
+      console.log(data)
+    }
+  }
+
+
   return (
     <div className="w-full container">
-      <form action="" className="top-[5% px-4]">
+      <form action="" onSubmit={handleSubmit} className="top-[5% px-4]">
         <div className="mb-3">
           <label htmlFor="" className="block">
             Name:
@@ -14,6 +48,8 @@ const Student = () => {
             id="name"
             placeholder="Enter your name"
             className="p-2 border border-slate-100 bg-slate-200 w-full rounded-lg"
+            onChange={handleChange}
+            value={formvalues.name}
           />
         </div>
         <div className="mb-3">
@@ -26,6 +62,8 @@ const Student = () => {
             placeholder="example@gmail.com"
             id="email"
             className="p-2 border border-slate-100 bg-slate-200 w-full rounded-lg"
+            onChange={handleChange}
+            value={formvalues.email}
           />
         </div>
         <div className="mb-3">
@@ -38,19 +76,11 @@ const Student = () => {
             id="password"
             placeholder="**********"
             className="p-2 border border-slate-100 bg-slate-200 w-full rounded-lg"
+            onChange={handleChange}
+            value={formvalues.password}
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="" className="block">
-            Confirm Password:
-          </label>
-          <input
-            type="password"
-            name="confirm password"
-            id="confirm password"
-            className="p-2 border border-slate-100 bg-slate-200 w-full rounded-lg"
-          />
-        </div>
+
         <div className="mb-3">
           <button className="w-full bg-orange-400 text-white p-2 rounded-lg">
             Register

@@ -4,6 +4,7 @@ import Admin from '../admin/Admin'
 import FileUploadForm from '../admin/FileUpload/FileUpload'
 import Home from '../components/Home/Home'
 import NavBar from '../components/Navbar/NavBar'
+import HouseDetails from '../components/house/HouseDetails'
 
 
 
@@ -20,6 +21,7 @@ const Pages = () => {
         <Route path='/' element={<Home/>}/>
         <Route path='/admin' element={<Admin/>}/>
         <Route path='/upload' element={<FileUploadForm/>}/>
+        <Route path="/HouseDetails" component={HouseDetails} />
     </Routes>
     </>
     

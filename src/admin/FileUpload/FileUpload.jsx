@@ -2,69 +2,70 @@
 import axios from "axios";
 import React, { useState } from "react";
 import supabase from '../../supabase/SupabaseConfig'
-import {useNavigate} from 'react-router-dom'
 
 
 const FileUploadForm = () => {
- const navigate = useNavigate()
 
-  const [selectedFile, setSelectedFile] = useState("");
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [formError, setFormErro] = useState(null);
  
 
-  const uploadImage = () => {
-    
-
+  
+  const handleImageUpload = async (e) => {
     const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("upload_preset", "vpkmoowm");
-    axios
-      .post("https://api.cloudinary.com/v1_1/ddc5gysrg/image/upload", formData)
-      .then((response) => {
-        console.log(response);
-      });
+    formData.append("file", e.target.files[0]);
+    formData.append("upload_preset", 'vpkmoowm');
+  
+    try {
+      const res = await axios.post( 'https://api.cloudinary.com/v1_1/ddc5gysrg/image/upload',formData);
+      const imageUrl = res.data.secure_url;
+      setImageUrl(imageUrl);
+    } catch (err) {
+      console.error(err);
+    }
   };
+  
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+ 
 
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
-    if (!name || !price || !location || !desc) {
+    if (!title || !price || !location || !description) {
       setFormErro("Please fill all fields");
       return
     }
      
+  
+      
+          const { data, error } = await supabase
+          .from('Houses')
+          .insert([{title, price, location, description, image_url:imageUrl}])
+          if(error){
+              console.log(error)
+              setFormErro('Please fill all fields')
+          }
+          if(data){
+              console.log(data)
+              setFormErro(null)
+          }
 
-    const { data, error } = await supabase
-    .from("Houses")
-    .insert([{name, price, location, description}])
-    if(error){
-        console.log(error)
-        setFormErro('Please fill all fields')
-    }
-    if(data){
-        console.log(data)
-        navigate('/admin')
-    }
+   
+  
+    
      
    }
 
 
-  const submitAll = (event) => {
-    uploadImage(event);
-    handleSubmit(event);
-  };
-
+ 
   return (
     <div className="w-full">
-      <div>
-        <form className="bg-white p-6 rounded-lg shadow-lg ">
+      <div className="container mx-auto">
+        <form className="bg-wh rounded-lg shadow-lg " onSubmit={handleSubmit}>
           <div className="">
             <div className="mb-3">
               <label
@@ -77,7 +78,7 @@ const FileUploadForm = () => {
                 type="file"
                 id="file"
                 className="border border-gray-400 p-2 rounded-lg w-full"
-                onChange={handleFileChange}
+                onChange={handleImageUpload}
               />
               
             </div>
@@ -90,8 +91,8 @@ const FileUploadForm = () => {
                 name=""
                 id=""
                 className="p-2 rounded-lg border border-gray-400 w-full"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
 
@@ -126,7 +127,7 @@ const FileUploadForm = () => {
               type="text"
               className="p-2 rounded-lg border border-gray-400 w-full "
               value={description}
-              onChange={(e) => setDesc(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
           {formError && <p>{formError}</p>}
@@ -134,7 +135,7 @@ const FileUploadForm = () => {
             <button
               type="submit"
               className="bg-blue-500 text-white py-2 w-full px-4 rounded-lg hover:bg-blue-600"
-              onClick={submitAll}
+              
             >
               Upload
             </button>

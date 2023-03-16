@@ -9,8 +9,10 @@ const NavBar = () => {
   const [modal2, setModal2] = useState(null);
   return (
     <>
-      <div className="w-full">
-        <div className="flex items-center justify-between md:px-24 px-3 shadow-lg bg-zinc-100 h-20">
+      <div className="w-full  bg-zinc-100 shadow-lg h-20 ">
+        <div className="container mx-auto ">
+
+        <div className="flex items-center justify-between  ">
           <div>
             <img src={Logo} alt="" className="h-[4em]" />
           </div>
@@ -19,6 +21,7 @@ const NavBar = () => {
             <button onClick={() => setOpen(true)}>Register</button>
           </div>
         </div>
+      </div>
       </div>
       <Modal isVissible={open} onClose={() => setOpen(false)}>
        

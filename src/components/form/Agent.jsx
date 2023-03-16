@@ -1,9 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
+import supabase from "../../supabase/SupabaseConfig";
+import { useNavigate } from "react-router-dom";
 
 const Agent = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    campus: "",
+  });
+  console.log(formData);
+
+  const handleChange = (e) => {
+    setFormData((prevFormData) => {
+      return {
+        ...prevFormData,
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+            campus: formData.campus,
+          },
+        },
+      });
+      alert("check your email for verification");
+      navigate("/admin");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="container">
-      <form action="" className="top-[10% px-4]">
+      <form action="" onSubmit={handleSubmit} className="top-[10% px-4]">
         <div className="mb-2">
           <label htmlFor="" className="block">
             Name:
@@ -14,6 +56,7 @@ const Agent = () => {
             id="name"
             placeholder="Enter your name"
             className="p-2 border border-blue-600 w-full rounded-lg"
+            onChange={handleChange}
           />
         </div>
         <div className="mb-2">
@@ -26,6 +69,7 @@ const Agent = () => {
             placeholder="example@gmail.com"
             id="email"
             className=" p-2 border border-blue-600 w-full rounded-lg"
+            onChange={handleChange}
           />
         </div>
         <div className="mb-2">
@@ -38,6 +82,7 @@ const Agent = () => {
             id="password"
             placeholder="**********"
             className="p-2 border border-blue-600 w-full rounded-lg"
+            onChange={handleChange}
           />
         </div>
         <div className="mb-2">
@@ -49,6 +94,7 @@ const Agent = () => {
             name="confirm password"
             id="confirm password"
             className="p-2 border border-blue-600 w-full rounded-lg"
+            onChange={handleChange}
           />
         </div>
         <div className="mb-2">
@@ -61,6 +107,7 @@ const Agent = () => {
             id="confirm password"
             className="p-2 border border-blue-600 w-full rounded-lg"
             placeholder="Gk capmus"
+            onChange={handleChange}
           />
         </div>
 
